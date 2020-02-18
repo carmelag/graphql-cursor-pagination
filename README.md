@@ -1,25 +1,27 @@
-### Readme V1.0
+# Readme V1.0
 
 ## How to run the application
 
-# Install the packages 
+### Install the packages 
 `npm install`
 
-# Run the application
+### Run the application
 `nodemon start`
 
-The application runs on localhost:4000/graphql
+The application runs on [localhost:4000/graphql](http://localhost:4000/graphql)
 
-# Example of GraphQL query
+### Example of GraphQL query
 
+```
 query {
-  artists {
-    firstName
-    lastName
-    artMovement
-    artworks {
-      title
-      year
+    artists {
+        firstName
+        lastName
+        artMovement
+        artworks {
+            title
+            year
+            }
     }
-  }
 }
+```
