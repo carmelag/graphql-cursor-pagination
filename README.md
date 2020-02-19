@@ -85,3 +85,15 @@ __?first=5&after="cursorValueString"__ returns the first 5 items after the item 
 From the __performance point of view__, this approach is efficient and faster. It is not tied neither the offset value nor to the dataset size.
 The cursor-based approach doesn't take into consideration the already shown items, as you go ahead paginating the new results. 
 It starts paginating from the cursor delimiter, just ignoring everything that stays behind it. 
+
+***
+
+## Prisma-task-app 
+This tutorial shows how to implement a cursor-based pagination on GraphQL API. 
+The javascript server-side application runs on __Node.js__ runtime and interacts with a underlying ___MySQL database__ through __Knex__ query builder. You can find the database schema file at `./server/db.sql`
+
+## Prerequisites
+1. You should have Node.js javascript runtime installed in your machine. If you don't have it installed, please go to this [link](https://nodejs.org/en/download/) to download it.
+2. You should have a MySQL Database installed on your computer. In case you don't have it, please dowload it [here](https://www.mysql.com/it/downloads/)
+
+
