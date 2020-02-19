@@ -1,25 +1,27 @@
-### Readme V1.0
+# Readme V1.0
 
 ## How to run the application
 
-# Install the packages 
+### Install the packages 
 `npm install`
 
-# Run the application
+### Run the application
 `nodemon start`
 
-The application runs on localhost:4000/graphql
+The application runs on [localhost:4000/graphql](http://localhost:4000/graphql)
 
-# Example of GraphQL query
+### Example of GraphQL query
 
+```
 query {
-  artists {
-    firstName
-    lastName
-    artMovement
-    artworks {
-      title
-      year
+    artists {
+        firstName
+        lastName
+        artMovement
+        artworks {
+            title
+            year
+            }
     }
   }
 }
@@ -82,7 +84,3 @@ __?first=5&after="cursorValueString"__ returns the first 5 items after the item 
 From the __performance point of view__, this approach is efficient and faster. It is not tied neither the offset value nor to the dataset size.
 The cursor-based approach doesn't take into consideration the already shown items, as you go ahead paginating the new results. 
 It starts paginating from the cursor delimiter, just ignoring everything that stays behind it. 
-
-
-
-
