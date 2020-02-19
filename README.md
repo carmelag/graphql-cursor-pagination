@@ -46,10 +46,10 @@ Pagination is a broad concept that applies to many circumstances, such as:
 * Messages on a messaging platform
 
 The most common pagination methods are:
-* __[offset/limit pagination][offset-limit-method]__
-* __[cursor-based pagination][cursor-based-method]__
+- [offset/limit pagination][offset-limit-method]
+- [cursor-based pagination][cursor-based-method]
 
-### [offset-limit-method]:Offset/limit pagination
+### Offset/limit pagination
 This approach is based on the following values:
 
     * __offset:__ it's an integer and defines the position of the starting point to read the data.
@@ -73,7 +73,7 @@ The method's speed is strictly related to the offset-value: *the bigger, the slo
 When offset is really big the performance goes down because the application should go through all the elements before the offset to throw them away then and start pagination from the *offset-th* item.
 Beyond the __performance issues__, there are also problems related to the __correctness of results__. It could happen that some data are received multiple times and some others are never shown. This issue is related to the order of the data and to new data. If the order is not specified and new items are added the __page-drift issue__ is the outcome.
 
-### [cursor-based-method]:Cursor-based pagination
+### Cursor-based pagination
 The __cursor-based pagination (also known as [Relay](https://relay.dev/docs/en/introduction-to-relay)-style pagination)__ is the solution to the limitations of the limit/offset approach.
 
 This method handles data in chunks that start exactly after the item identified by a "cursor" and have a specific size, defined by the "first" parameter.
