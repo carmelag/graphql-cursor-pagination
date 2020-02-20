@@ -55,7 +55,7 @@ knex('artwork').insert(artworks).then(() => console.log("Artworks data inserted"
 
 module.exports = {
     encode: function (plainId) {
-        var encodedId = Buffer.from(plainId).toString('base64');
+        var encodedId = Buffer.from("cursor_" + plainId).toString('base64');
         return encodedId;
     },
     decode: function (encodedId) {
