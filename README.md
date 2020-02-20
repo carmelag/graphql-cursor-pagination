@@ -96,4 +96,60 @@ The javascript server-side application runs on __Node.js__ runtime and interacts
 1. You should have Node.js javascript runtime installed in your machine. If you don't have it installed, please go to this [link](https://nodejs.org/en/download/) to download it.
 2. You should have a MySQL Database installed on your computer. In case you don't have it, please dowload it [here](https://www.mysql.com/it/downloads/)
 
+## General setup
+Create the project directory
+`mkdir prisma-app-task`
+
+Run the command to inizialize a npm package:
+`npm init`
+
+If you want to include package custom information, this is the right time. Just answer to the prompted questions.
+![Package settings](./tutorial-img/tutorial-create-package.png)
+If you want to accept the default settings, hit `Enter` and move on.
+
+Create a new sub-directory called `server`
+`mkdir server`
+
+Now open your project with your favorite editor, some good options are:
+*Sublime
+*Atom
+*Visual Studio Code (this one was used to create the sample)
+Create a new file called `index.js` within the `server` directory.
+Add to the javascript file the following function:
+```
+console.log("My awesome node application is running!");
+```
+
+### package.json setup
+Open the package.json setup with your favorite editor and add the section  *dependencies*
+```
+ "dependencies": {
+    "express": "^4.17.1",
+    "express-graphql": "^0.9.0",
+    "graphql": "^14.6.0",
+    "knex": "^0.20.9",
+    "mysql": "^2.18.1",
+    "nodemon": "^1.3.7"
+  }
+```
+
+Now change the start script to:
+```
+  "scripts": {
+    "start": "./node_modules/.bin/nodemon server/index.js --ignore node_modules/"
+  }
+```
+
+Go back to your terminal and run the `npm install` command that will install the dependencies.
+You can start the application by running:
+`nodemon start`
+
+[Nodemon](https://www.npmjs.com/package/nodemon) is a package that allows the auto-refreshing of the application after a change is applied.
+Your terminal should now show the message *"My awesome node application is running!"*
+
+The general server setup is all set. Let's go to the database.
+
+## Database setup
+To setup your MySQL database, you can either choose to use the command line tool or to download a GUI.
+In the first case after you 
 
