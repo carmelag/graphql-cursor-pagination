@@ -51,7 +51,17 @@ knex('artwork').insert(artworks).then(() => console.log("Artworks data inserted"
         //knex.destroy();
     }); */
 
+
+
 module.exports = {
+    encode: function (plainId) {
+        var encodedId = Buffer.from(plainId).toString('base64');
+        return encodedId;
+    },
+    decode: function (encodedId) {
+        var decodedID = Buffer.from(encodedId, 'base64').toString('utf-8');
+        return decodedID;
+    },
     allArtists: function () {
         return knex('artist');
     },

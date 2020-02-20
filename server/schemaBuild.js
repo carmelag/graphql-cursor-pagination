@@ -20,7 +20,7 @@ const ArtworkType = new GraphQLObjectType({
     fields: {
         id: { type: GraphQLID },
         title: { type: GraphQLString },
-        year: { type: GraphQLInt }
+        year: { type: GraphQLInt },
     }
 })
 
@@ -75,7 +75,6 @@ const RootQuery = new GraphQLObjectType({
                 return db.allArtists();
             }
         },
-
         artist: {
             type: ArtistType,
             description: 'Artist with a specific ID',
@@ -103,9 +102,29 @@ const RootQuery = new GraphQLObjectType({
                 first: { type: GraphQLInt },
                 after: { type: GraphQLInt }
             },
-            resolve(parentValue, args) {
-                artworksAfter = db.allArtworksCursor(args.after);
-                return artworksAfter;
+            resolve() {
+                var artworksCollection;
+                artworksCollection = knex('artwork');
+
+                const newArtworkMapping = artworksCollection.map(item => {
+                    var normalObj = Object.assign({}, item);
+                    return {
+                        cursor: db.encode(String(normalObj.id)),
+                        node: {
+                            id: normalObj.id,
+                            year: normalObj.year,
+                            title: normalObj.title
+                        }
+                    }
+                });
+
+                var newConnection = {
+                    pageInfo: {
+                        hasNextPage: true
+                    },
+                    edges: newArtworkMapping
+                }
+                return newConnection;
             }
         }
     }
