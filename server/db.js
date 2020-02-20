@@ -4,20 +4,7 @@ var knex = require('knex')(config[env]);
 
 module.exports = knex;
 
-knex.migrate.latest([config]);
-
-const artists = [
-    { firstName: 'Vincent', lastName: 'Van Gogh', artMovement: 'Post-impressionism' },
-    { firstName: 'Frida', lastName: 'Kahlo', artMovement: 'Surrealism' },
-    { firstName: 'Pablo', lastName: 'Picasso', artMovement: 'Cubism' },
-    { firstName: 'Edgar', lastName: 'Degas', artMovement: 'Realism' },
-    { firstName: 'Gustav', lastName: 'Klimt', artMovement: 'Surrealism' },
-    { firstName: 'Marc', lastName: 'Chagall', artMovement: 'Surrealism' },
-    { firstName: 'Marc', lastName: 'Chagall', artMovement: 'Surrealism' },
-    { firstName: 'George', lastName: 'Saurat', artMovement: 'Pointillism' },
-    { firstName: 'Jacques Louis', lastName: 'David', artMovement: 'Neoclassicism' }
-
-];
+//knex.migrate.latest([config]);
 
 const artworks = [
     { artistId: 1, title: 'Cafe Terrace on the Place du Forum', year: 1934 },
@@ -51,8 +38,6 @@ knex('artwork').insert(artworks).then(() => console.log("Artworks data inserted"
         //knex.destroy();
     }); */
 
-
-
 module.exports = {
     encode: function (plainId) {
         var encodedId = Buffer.from("cursor_" + plainId).toString('base64');
@@ -63,25 +48,25 @@ module.exports = {
         console.log(decodedID);
         return decodedID;
     },
-    getArtwork: function (id) {
-        var idnew = 2;
-
-        return knex('artwork').where('id', idnew).then(() => console.log("Artworks data inserted"))
+    getArtwork: function (artworkId) {
+        return knex('artwork').where('id', artworkId)
+            .then(function (row) {
+                var normalObj = Object.assign({}, row[0]);
+                console.log(normalObj);
+                return normalObj;
+            }
+            )
             .catch((err) => { console.log(err); throw err })
             .finally(() => {
                 //knex.destroy();
             });
     },
-    allArtists: function () {
-        return knex('artist');
-    },
     allArtworks: function () {
         return knex('artwork');
     },
-    allArtworksCursor: function (limit, cursor) {
+    allArtworksCursor: function (limitValue, cursor) {
         var cursorVal = cursor;
-        var cursorLimit = 2;
-        return knex('artwork').where('id', '>', cursorVal).limit(cursorLimit);
+        return knex('artwork').where('id', '>', cursorVal).limit(limitValue);
     }
 }
 

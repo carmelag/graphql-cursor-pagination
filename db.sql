@@ -58,22 +58,22 @@ CREATE TABLE `artwork` (
 -- Dump dei dati per la tabella `artwork`
 --
 
-INSERT INTO `artwork` (`id`, `title`, `year`, `artistId`) VALUES
-(1, 'Cafe Terrace on the Place du Forum', 1934, 1),
-(2, 'Starry Night', 1934, 1),
-(3, 'Vase With Twelve Sunflowers', 1934, 1),
-(4, 'Frida and Diego Rivera', 1931, 2),
-(5, 'The broken column', 1944, 2),
-(6, 'Cat catching a bird', 1939, 3),
-(7, 'Guernica', 1937, 3),
-(8, 'The girls of Avignon', 1907, 3),
-(9, 'Goldfish', 1902, 5),
-(10, 'Danae', 1908, 5),
-(11, 'The kiss', 1908, 5),
-(12, 'The three ages of woman', 1905, 5),
-(13, 'Bride with a Fan', 1911, 6),
-(14, 'Woman with a bouquet', 1910, 6),
-(15, 'Over the town', 1918, 6);
+INSERT INTO `artwork` (`id`, `title`, `year`, `artist`) VALUES
+(1, 'Cafe Terrace on the Place du Forum', 1934, "Vincent Van Gogh"),
+(2, 'Starry Night', 1934, "Vincent Van Gogh"),
+(3, 'Vase With Twelve Sunflowers', 1934, "Vincent Van Gogh"),
+(4, 'Frida and Diego Rivera', 1931, "Frida Kahlo"),
+(5, 'The broken column', 1944, "Frida Kahlo"),
+(6, 'Cat catching a bird', 1939, "Pablo Picasso"),
+(7, 'Guernica', 1937, "Pablo Picasso"),
+(8, 'The girls of Avignon', 1907, "Gustav Klimt"),
+(9, 'Goldfish', 1902, "Gustav Klimt"),
+(10, 'Danae', 1908, "Gustav Klimt"),
+(11, 'The kiss', 1908, "Gustav Klimt"),
+(12, 'The three ages of woman', 1905, "Gustav Klimt"),
+(13, 'Bride with a Fan', 1911, "Marc Chagall"),
+(14, 'Woman with a bouquet', 1910, "Marc Chagall"),
+(15, 'Over the town', 1918, "Marc Chagall");
 
 -- --------------------------------------------------------
 

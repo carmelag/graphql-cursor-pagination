@@ -21,6 +21,7 @@ const ArtworkType = new GraphQLObjectType({
         id: { type: GraphQLID },
         title: { type: GraphQLString },
         year: { type: GraphQLInt },
+        artist: { type: GraphQLString }
     }
 })
 
@@ -30,7 +31,6 @@ const PageInfo = new GraphQLObjectType({
         hasNextPage: { type: GraphQLBoolean }
     }
 });
-
 
 const ArtworkEdge = new GraphQLObjectType({
     name: 'ArtworkEdge',
@@ -48,43 +48,10 @@ const ArtworkConnection = new GraphQLObjectType({
     }
 });
 
-
-
-const ArtistType = new GraphQLObjectType({
-    name: 'Artist',
-    fields: {
-        id: { type: GraphQLID },
-        firstName: { type: GraphQLString },
-        lastName: { type: GraphQLString },
-        artMovement: { type: GraphQLString },
-        artworks: { type: ArtworkConnection }
-    }
-})
-
-
-
 const RootQuery = new GraphQLObjectType({
     description: 'Root Query',
     name: 'Query',
     fields: {
-        artists: {
-            type: GraphQLList(ArtistType),
-            description: 'List of All Artists',
-            resolve() {
-                return db.allArtists();
-            }
-        },
-
-        artist: {
-            type: ArtistType,
-            description: 'Artist with a specific ID',
-            args: {
-                id: { type: GraphQLID }
-            },
-            resolve: (parentValue, args) =>
-                knex('artist').where('id', args.id)
-        },
-
         artwork: {
             type: ArtworkType,
             args: {
@@ -92,7 +59,7 @@ const RootQuery = new GraphQLObjectType({
             },
             description: 'Artwork with a specific ID',
             resolve(parentValue, args) {
-                db.getArtwork(1);
+                return db.getArtwork(args.id);
             }
         },
 
