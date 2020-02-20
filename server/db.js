@@ -63,6 +63,15 @@ module.exports = {
         console.log(decodedID);
         return decodedID;
     },
+    getArtwork: function (id) {
+        var idnew = 2;
+
+        return knex('artwork').where('id', idnew).then(() => console.log("Artworks data inserted"))
+            .catch((err) => { console.log(err); throw err })
+            .finally(() => {
+                //knex.destroy();
+            });
+    },
     allArtists: function () {
         return knex('artist');
     },
