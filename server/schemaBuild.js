@@ -100,12 +100,13 @@ const RootQuery = new GraphQLObjectType({
             description: "Connection of Artworks",
             args: {
                 first: { type: GraphQLInt },
-                after: { type: GraphQLInt }
+                after: { type: GraphQLString }
             },
-            resolve() {
+            resolve(parentValue, args) {
                 var artworksCollection;
-                artworksCollection = knex('artwork');
-
+                //artworksCollection = knex('artwork');
+                var cursor = db.decode(args.after);
+                artworksCollection = db.allArtworksCursor(args.first, cursor);
                 const newArtworkMapping = artworksCollection.map(item => {
                     var normalObj = Object.assign({}, item);
                     return {

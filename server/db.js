@@ -59,7 +59,8 @@ module.exports = {
         return encodedId;
     },
     decode: function (encodedId) {
-        var decodedID = Buffer.from(encodedId, 'base64').toString('utf-8');
+        var decodedID = Buffer.from(encodedId, 'base64').toString('utf-8').split("_")[1];
+        console.log(decodedID);
         return decodedID;
     },
     allArtists: function () {
@@ -68,8 +69,10 @@ module.exports = {
     allArtworks: function () {
         return knex('artwork');
     },
-    allArtworksCursor: function (cursor) {
-        return knex('artwork').where('id', '>', cursor);
+    allArtworksCursor: function (limit, cursor) {
+        var cursorVal = cursor;
+        var cursorLimit = 2;
+        return knex('artwork').where('id', '>', cursorVal).limit(cursorLimit);
     }
 }
 
