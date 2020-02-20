@@ -133,7 +133,7 @@ Open the package.json setup with your favorite editor and add the section  *depe
   }
 ```
 
-Now change the start script to:
+Now change the *start script section* to:
 ```
   "scripts": {
     "start": "./node_modules/.bin/nodemon server/index.js --ignore node_modules/"
@@ -150,6 +150,29 @@ Your terminal should now show the message *"My awesome node application is runni
 The general server setup is all set. Let's go to the database.
 
 ## Database setup
-To setup your MySQL database, you can either choose to use the command line tool or to download a GUI.
-In the first case after you 
+To setup your MySQL database, you can either choose to use the command line tool or to download a GUI (Sequel PRO, phpmyadmin, MySQL Workbench, HeidiSQL)
+You need to create a brand new db called *"art-db"*. 
+After that in your project root, create a new sql file and name it *"db.sql"* copy inside this file the db dump that you find in the repository's __db.sql__. 
+
+You need to execute this file to create 2 tables:
+- artist
+- artwork
+And fill them with data.
+
+If you are using MySQL command line, open a new tab on the terminal and to create the database run:
+```
+mysql --host=localhost -u{username} -p
+CREATE DATABASE art-db;
+```
+`CTRL` + `C` now exit MySQL CLI.
+
+And to create the tables run:
+```
+mysql --host=localhost -uroot -p art-db < db.sql
+```
+
+If you are using a GUI for your MySQL server, please refer to the manual and create a new DB called "art-db" then execute the SQL file to create the tables and the related content.
+
+
+
 
