@@ -52,8 +52,8 @@ The most common pagination methods are:
 ### Offset/limit pagination
 This approach is based on the following values:
 
-    * __offset:__ it's an integer and defines the position of the starting point to read the data.
-    * __limit:__ it's an integer and defines the number of data items to fetch after the starting point (the offset)
+- __offset:__ it's an integer and defines the position of the starting point to read the data.
+- __limit:__ it's an integer and defines the number of data items to fetch after the starting point (the offset)
   
 *For example:* let's consider a request to a GraphQL API having the following pagination setting:
 __?offset=10&limit=20__
