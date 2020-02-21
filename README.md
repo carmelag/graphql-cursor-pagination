@@ -1,37 +1,10 @@
-# Readme V1.0
+# A cursor-based pagination application created with: Node.js + knex + MySQL + GraphQL
 
-## How to run the application
-
-### Install the packages 
-`npm install`
-
-### Run the application
-`nodemon start`
-
-The application runs on [localhost:4000/graphql](http://localhost:4000/graphql)
-
-### Example of GraphQL query
-
-```
-query {
-    artists {
-        firstName
-        lastName
-        artMovement
-        artworks {
-            title
-            year
-            }
-    }
-  }
-}
-```
+This tutorial will help you to write a sample server-side GraphQL API that uses cursor-based pagination.
 
 *** 
 
 ## Introduction to pagination
-
-This tutorial will help you to write a sample server-side GraphQL API that uses cursor-based pagination.
 
 Nowadays, applications can manage a massive quantity of data. Still, despite the efficient and performant ways to store and manage a big amount of data, one of the main concerns is the way to present them to the final users.
 
