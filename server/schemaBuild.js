@@ -11,6 +11,7 @@ const {
     GraphQLBoolean
 } = graphql;
 
+//GraphQL types definition
 const ArtworkType = new GraphQLObjectType({
     name: 'Artwork',
     fields: {
@@ -45,6 +46,7 @@ const ArtworkConnection = new GraphQLObjectType({
     }
 });
 
+//GraphQL queries definition
 const RootQuery = new GraphQLObjectType({
     description: 'Root Query',
     name: 'Query',
@@ -69,6 +71,7 @@ const RootQuery = new GraphQLObjectType({
             },
             resolve(parentValue, args) {
                 var artworksCollection;
+                //This variable should store how many nodes there are in the edge
                 var moreResults;
                 var cursor = db.decode(args.after);
                 artworksCollection = db.allArtworksCursor(args.first, cursor);
@@ -83,7 +86,6 @@ const RootQuery = new GraphQLObjectType({
                     moreResults = false;
                 }
                 */
-
 
                 //The right value for hasNextPage should be stored within moreResult and returned by a count function on the db*/
                 var newConnection = {
