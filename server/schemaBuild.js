@@ -1,10 +1,6 @@
 const graphql = require('graphql');
 var db = require('./db');
 
-var config = require('../knexfile.js');
-var env = 'development';
-var knex = require('knex')(config[env]);
-
 const {
     GraphQLObjectType,
     GraphQLID,
@@ -28,7 +24,8 @@ const ArtworkType = new GraphQLObjectType({
 const PageInfo = new GraphQLObjectType({
     name: 'PageInfo',
     fields: {
-        hasNextPage: { type: GraphQLBoolean }
+        hasNextPage: { type: GraphQLBoolean },
+        lastCursor: { type: GraphQLString }
     }
 });
 
@@ -71,28 +68,31 @@ const RootQuery = new GraphQLObjectType({
                 after: { type: GraphQLString }
             },
             resolve(parentValue, args) {
-
                 var artworksCollection;
-                //artworksCollection = knex('artwork');
+                var moreResults;
                 var cursor = db.decode(args.after);
                 artworksCollection = db.allArtworksCursor(args.first, cursor);
-                const newArtworkMapping = artworksCollection.map(item => {
-                    var normalObj = Object.assign({}, item);
-                    return {
-                        cursor: db.encode(String(normalObj.id)),
-                        node: {
-                            id: normalObj.id,
-                            year: normalObj.year,
-                            title: normalObj.title
-                        }
-                    }
-                });
 
+                /* This way to decide if more results are available doesn't work"
+
+                var nodesLeft = db.allArtworksCursorCount(cursor);
+            
+                if (nodesLeft > args.first) {
+                    moreResults = true;
+                } else {
+                    moreResults = false;
+                }
+                */
+
+
+                //The right value for hasNextPage should be stored within moreResult and returned by a count function on the db*/
                 var newConnection = {
                     pageInfo: {
-                        hasNextPage: true
+                        //hasNextPage: moreResults,
+                        hasNextPage: true,
+                        lastCursor: args.after
                     },
-                    edges: newArtworkMapping
+                    edges: artworksCollection
                 }
                 return newConnection;
             }
