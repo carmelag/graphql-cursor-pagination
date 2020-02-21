@@ -245,7 +245,7 @@ const ArtworkType = new GraphQLObjectType({
 ```
 
 And let's define the related query __"artwork"__ within a GRaphQLObject called __"Root Query"__. The query object collects all the possible queries that can be issued.
-
+```
 const RootQuery = new GraphQLObjectType({
     description: 'Root Query',
     name: 'Query',
@@ -261,8 +261,16 @@ const RootQuery = new GraphQLObjectType({
             }
         }
 })
+```
 
 This query object is of type *"ArtworkType"*, that means that it will return an object of *"ArtworkType"* and accepts as an *argument* an integer: the *id* of the artwork.
+At the end of the file let's export it:
+```
+module.exports = new GraphQLSchema({
+    query: RootQuery
+})
+```
+
 In order to keep the database logic separated, everything that involves database operation will be done on the  *db module*, that needs to be imported at the beginning of the SchemaBuild.js file:
 ```
 var db = require('./db');
@@ -319,11 +327,173 @@ app.use('/graphql', expressGraphQL({
 GraphiQL is an in-browser GUI to use GraphQL.
 
 Go to [localhost:4000/graphql](http://localhost:4000/graphql) and run the query: 
+```
+{
+artwork(id:2){
+  year
+  title
+  artist
+}}
+```
+You should see this outcome:
 ![Artwork query](./tutorial-img/artwork-query.png)
 
 ### GraphQL Cursor-based pagination 
+The [Relay-style pagination specifications]((https://relay.dev/docs/en/introduction-to-relay)-style pagination) define a specific structure to build a cursor-based pagination in GraphQL.
+This structure requires the definition of the following specific types:
+* Connection Type 
+* Edge Type
+* PageInfo Type
+* Node
 
+__Connection Type__ is made of a list of __Edge Type objects__ and a __PageInfo Type object__.
+The __Edge Type__ is made of a list of __node__ and a __cursor__ value.
 
+In this new scenario the *ArtworkType* represents a node of this structure. In GraphQL you can navigate through the edges to all the nodes of the application to discover their values.
+The cursor acts like a pointer that indicates the place where starting the exploration and the pageInfo object tells you if there are further nodes to discover or if you are at the end of the edge.
+
+Let's go adding the new types to the schema.
+Go to *schemaBuild.js* and right after the *ArtworkType* definition add the following types.
+```
+const PageInfo = new GraphQLObjectType({
+    name: 'PageInfo',
+    fields: {
+        hasNextPage: { type: GraphQLBoolean },
+        lastCursor: { type: GraphQLString }
+    }
+});
+
+const ArtworkEdge = new GraphQLObjectType({
+    name: 'ArtworkEdge',
+    fields: {
+        node: { type: ArtworkType },
+        cursor: { type: GraphQLString },
+    }
+});
+
+const ArtworkConnection = new GraphQLObjectType({
+    name: 'ArtworkConnection',
+    fields: {
+        edges: { type: new GraphQLList(ArtworkEdge) },
+        pageInfo: { type: PageInfo }
+    }
+});
+```
+
+As you can see the new types implements the relationships that we have explained before and that you can see shown in the following picture.
+
+![Schema specs](./tutorial-img/schema-specs.png)
+
+### Implementation of the DB functions to support the pagination
+Go back to the *db.js* file ad add to the functions within the *module.export section*, the code:
+```
+ encode: function (plainId) {
+        var encodedId = Buffer.from("cursor_" + plainId).toString('base64');
+        return encodedId;
+    },
+    decode: function (encodedId) {
+        var decodedID = Buffer.from(encodedId, 'base64').toString('utf-8').split("_")[1];
+        return decodedID;
+    }
+    allArtworksCursor: function (limitValue, cursor) {
+        var cursorVal = cursor;
+
+        return knex('artwork').where('id', '>', cursorVal).limit(limitValue)
+            .then(function (rows) {
+                const newArtworkMapping = rows.map(item => {
+                    var normalObj = Object.assign({}, item);
+                    return {
+                        cursor: Buffer.from("cursor_" + normalObj.id).toString('base64'),
+                        node: {
+                            id: normalObj.id,
+                            year: normalObj.year,
+                            title: normalObj.title,
+                            artist: normalObj.artist
+                        }
+                    }
+                });
+                return newArtworkMapping;
+            });
+    },
+    allArtworksCursorCount: function (cursor) {
+        var cursorVal = cursor;
+        return knex('artwork').count('id as nodesLeft').where('id', '>', cursorVal)
+            .then(function (res) {
+                var normalObj = Object.assign({}, res[0]);
+                return normalObj.nodesLeft;
+            });
+    }
+```
+
+All this functions interact using knex with the database and support the pagination implementation in *schemaBuild.js file*, where they are used to paginate artworks. 
+Under the *artwork* query definition add a comma `,` and paste the  code:
+```
+        artworks: {
+            type: ArtworkConnection,
+            description: "Connection of Artworks",
+            args: {
+                first: { type: GraphQLInt },
+                after: { type: GraphQLString, defaultValue: "Y3Vyc29yXzE=" }
+            },
+            resolve(parentValue, args) {
+                var artworksCollection;
+                //This variable should store how many nodes there are in the edge
+                var moreResults;
+                var cursor = db.decode(args.after);
+                artworksCollection = db.allArtworksCursor(args.first, cursor);
+
+                /* This way to decide if more results are available doesn't work"
+
+                var nodesLeft = db.allArtworksCursorCount(cursor);
+            
+                if (nodesLeft > args.first) {
+                    moreResults = true;
+                } else {
+                    moreResults = false;
+                }
+                */
+
+                //The right value for hasNextPage should be stored within moreResult and returned by a count function on the db*/
+                var newConnection = {
+                    pageInfo: {
+                        //hasNextPage: moreResults,
+                        hasNextPage: true,
+                        lastCursor: args.after
+                    },
+                    edges: artworksCollection
+                }
+                return newConnection;
+            }
+        }
+```
+The pagination is done using an opaque (encode/decode functions are used to get this purpose) string as a cursor (passed as the argument "after"), that identifies uniquely the node and allow to you to query the following "n" element (the value of "n" is passed as the argument "first").
+
+Now you can go back to GraphiQL interface and run the following query:
+```
+{
+artworks(first:5, after:"Y3Vyc29yXzE="){
+  edges{
+    cursor
+    node{
+      id
+      title
+      year
+      artist
+      
+    }
+    
+  }pageInfo{
+    hasNextPage
+  }
+}
+}
+```
+And this is the result:
+![Package settings](./tutorial-img/tutorial-create-package.png)
+
+You could also ask for the `lastCursor` field, it can be useful for your next query to keep track of the last element you have already seen.
+
+The application is  able to return a specific artwork having an id and a list of paginated artworks that you can go through using cursors.
 
 
 
