@@ -19,8 +19,8 @@ Pagination is a broad concept that applies to many circumstances, such as:
 * Messages on a messaging platform
 
 The most common pagination methods are:
-- [offset/limit pagination][offset-limit-method]
-- [cursor-based pagination][cursor-based-method]
+- offset/limit pagination
+- cursor-based pagination
 
 ### Offset/limit pagination
 This approach is based on the following values:
@@ -62,15 +62,15 @@ The biggest limitations of this approach is that it should be based on a value t
 
 ***
 
-## Prisma-task-app 
+## Tutorial 
 This tutorial shows how to implement a cursor-based pagination on GraphQL API. 
 The javascript server-side application runs on __Node.js__ runtime and interacts with a underlying ___MySQL database__ through __Knex__ query builder. You can find the database schema file at `./server/db.sql`
 
-## Prerequisites
+### Prerequisites
 1. You should have Node.js javascript runtime installed in your machine. If you don't have it installed, please go to this [link](https://nodejs.org/en/download/) to download it.
 2. You should have a MySQL Database installed on your computer. In case you don't have it, please dowload it [here](https://www.mysql.com/it/downloads/)
 
-## General setup
+### General setup
 Create the project directory
 `mkdir prisma-app-task`
 
@@ -121,7 +121,7 @@ Your terminal should now show the message *"My awesome node application is runni
 
 The general server setup is all set. Let's go to the database.
 
-## Database setup
+### Database setup
 To setup your MySQL database, you can either choose to use the command line tool or to download a GUI (__Sequel PRO, phpmyadmin, MySQL Workbench, HeidiSQL__)
 You need to create a brand new db called *"art-db"*. 
 After that in your project root, create a new sql file and name it *"db.sql"* copy inside this file the db dump that you find in the repository's __db.sql__. 
@@ -462,11 +462,12 @@ artworks(first:5, after:"Y3Vyc29yXzE="){
 }
 ```
 And this is the result:
-![Package settings](./tutorial-img/tutorial-create-package.png)
+![Pagination query](./tutorial-img/pagination-query.png)
 
 You could also ask for the `lastCursor` field, it can be useful for your next query to keep track of the last element you have already seen.
 
 The application is  able to return a specific artwork having an id and a list of paginated artworks that you can go through using cursors.
+
 
 
 
