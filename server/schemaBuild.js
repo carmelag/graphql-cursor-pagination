@@ -67,7 +67,7 @@ const RootQuery = new GraphQLObjectType({
             description: "Connection of Artworks",
             args: {
                 first: { type: GraphQLInt },
-                after: { type: GraphQLString }
+                after: { type: GraphQLString, defaultValue: "Y3Vyc29yXzE=" }
             },
             resolve(parentValue, args) {
                 var artworksCollection;

@@ -24,11 +24,9 @@ module.exports = {
                 //knex.destroy();
             });
     },
-    allArtworks: function () {
-        return knex('artwork');
-    },
     allArtworksCursor: function (limitValue, cursor) {
         var cursorVal = cursor;
+
         return knex('artwork').where('id', '>', cursorVal).limit(limitValue)
             .then(function (rows) {
                 const newArtworkMapping = rows.map(item => {
