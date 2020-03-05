@@ -1,4 +1,4 @@
-# A cursor-based pagination application created with: Node.js + knex + MySQL + GraphQL
+# A cursor-based pagination application with: Node.js + knex + MySQL + GraphQL :point_right: :page_with_curl:
 
 This tutorial will help you to write a sample server-side GraphQL API that uses cursor-based pagination.
 
@@ -6,7 +6,8 @@ This tutorial will help you to write a sample server-side GraphQL API that uses 
 
 ## Introduction to pagination
 
-Nowadays, applications can manage a massive quantity of data. Still, despite the efficient and performant ways to store and manage a big amount of data, one of the main concerns is the way to present them to the final users.
+Nowadays, applications can manage a massive quantity of data. 
+Still, despite the efficient and performant ways to store and manage a big amount of data, one of the main concerns is the way to present them to the final users.
 
 A rational solution to this concern consists of __paginating the data__.
 When it comes to a significant amount of data to be returned to the user, __pagination is the standard solution to divide a big dataset into sub-datasets.__
@@ -15,7 +16,7 @@ Pagination is a broad concept that applies to many circumstances, such as:
 
 * API (both REST and GraphQL)
 * Databases
-* Search results coming from a serch engine 
+* Search results coming from a search engine 
 * Messages on a messaging platform
 
 The most common pagination methods are:
@@ -32,7 +33,7 @@ This approach is based on the following values:
 __?offset=10&limit=20__
 
 The GraphQL API returns 20 data items after the 10th item.
-In the following call parameters offset and limit will change in this way: 
+In the following call parameters offset and limit changes in this way: 
 __?offset=30&limit=20__.
 The `new offset` is equal to `previous offset (10) + limit value (20)`
 The *final page* is reached when the offset value exceeds the total count of data items.
@@ -42,9 +43,9 @@ The *final page* is reached when the offset value exceeds the total count of dat
 This approach is not the most efficient because of some intrinsic weaknesses.
 The approach doesn't scale well for larger and size-variable datasets.
 The method's speed is strictly related to the offset-value: *the bigger, the slower*.
-When offset is really big the performance goes down because the application should go through all the elements before the offset to throw them away then and start pagination from the *offset-th* item.
-Beyond the __performance issues__, there are also problems related to the __correctness of results__. It could happen that some data are received multiple times and some others are never shown. This issue is related to the order of the data and to new data. If the order is not specified and new items are added the __page-drift issue__ is the outcome.
-In spite of the limitations, this approach is really simple and is acceptable with a size-limited dataset having approximately a fixed number of items.
+When offset is considerable the performance goes down because the application should go through all the elements before the offset to throw them away then and start pagination from the *offset-th* item.
+Beyond the __performance issues__, there are also problems related to the __correctness of results__. It could happen that some data might be received multiple times and some other is never shown. This issue is related to the order of the data and to new data. If the order is not specified and new items are added the __page-drift issue__ is the outcome.
+Despite the limitations, this approach is really simple and is acceptable with a size-limited dataset having approximately a fixed number of items.
 
 ### Cursor-based pagination
 The __cursor-based pagination (also known as [Relay](https://relay.dev/docs/en/introduction-to-relay)-style pagination)__ is the solution to the limitations of the limit/offset approach.
@@ -55,29 +56,29 @@ This method handles data in chunks that start exactly after the item identified 
 __?first=5&after="cursorValueString"__ returns the first 5 items after the item having the cursor "cursorValueString".
 
 #### Limitations/Advantages of the Cursor-based pagination
-From the __performance point of view__, this approach is efficient and faster. It is not tied neither the offset value nor to the dataset size.
+From the __performance point of view__, this approach is efficient and faster. It is tied neither to the offset value nor to the dataset size.
 The cursor-based approach doesn't take into consideration the already shown items, as you go ahead paginating the new results. 
 It starts paginating from the cursor delimiter, just ignoring everything that stays behind it. 
-The biggest limitations of this approach is that it should be based on a value that has a specific order and can be uniquely identified.
+The most significant limitation of this approach is that it should be based on a value that has a specific order and can be uniquely identified.
 
 ***
 
 ## Tutorial 
 This tutorial shows how to implement a cursor-based pagination on GraphQL API. 
-The javascript server-side application runs on __Node.js__ runtime and interacts with a underlying ___MySQL database__ through __Knex__ query builder. You can find the database schema file at `./server/db.sql`
+The javascript server-side application runs on __Node.js__ runtime and interacts with an underlying ___MySQL database__ through __Knex__ query builder. You can find the database schema file at `./server/db.sql`
 
 ### Prerequisites
 1. You should have Node.js javascript runtime installed in your machine. If you don't have it installed, please go to this [link](https://nodejs.org/en/download/) to download it.
-2. You should have a MySQL Database installed on your computer. In case you don't have it, please dowload it [here](https://www.mysql.com/it/downloads/)
+2. You should have a MySQL Database installed on your computer. In case you don't have it, please download it [here](https://www.mysql.com/it/downloads/)
 
 ### General setup
 Create the project directory
 `mkdir prisma-app-task`
 
-Run the command to inizialize a npm package:
+Run the command to initialize a npm package:
 `npm init`
 
-If you want to include package custom information, this is the right time. Just answer to the prompted questions.
+If you want to include package custom information, this is the right time. Just answer the prompted questions.
 ![Package settings](./tutorial-img/tutorial-create-package.png)
 If you want to accept the default settings, hit `Enter` and move on.
 
@@ -112,7 +113,7 @@ Now change the *start script section* to:
   }
 ```
 
-Go back to your terminal and run the `npm install` command that will install the dependencies.
+Go back to your terminal and run the `npm install` command that installs the dependencies.
 You can start the application by running:
 `nodemon start`
 
@@ -124,16 +125,16 @@ The general server setup is all set. Let's go to the database.
 ### Database setup
 To setup your MySQL database, you can either choose to use the command line tool or to download a GUI (__Sequel PRO, phpmyadmin, MySQL Workbench, HeidiSQL__)
 You need to create a brand new db called *"art-db"*. 
-After that in your project root, create a new sql file and name it *"db.sql"* copy inside this file the db dump that you find in the repository's __db.sql__. 
+After that, in your project root, create a new sql file and name it *"db.sql"* copy inside this file the database dump that you find in the repository's __db.sql__. 
 
 You need to execute this file to create the __artwork__ table and fill it with data.
 
-If you are using MySQL command line, open a new tab on the terminal and to create the database run:
+If you are using the MySQL command line, open a new tab on the terminal and to create the database run:
 ```
 mysql --host=localhost -u{username} -p
 CREATE DATABASE art-db;
 ```
-`CTRL` + `C` now exit MySQL CLI.
+`CTRL` + `C` now exit the MySQL CLI.
 
 And to create the tables run:
 ```
@@ -175,17 +176,17 @@ In order to implement GraphQL functionalities you need to require also the *expr
 const expressGraphQL = require('express-graphql')
 ```
 
-Now define the port you want to use, in this case 4000 and set up the epress app to lisent to this port
+Now define the port you want to use, in this case 4000 and set up the express app to listen to this port
 ```
 var port = 4000;
 app.listen(port);
 console.log("Listening on port", port);  
 ```
 
-The server is now running and thanks to *nodemon tool* it will be refreshed everytime you change something in the code.
+The server is now running and thanks to *nodemon tool* it will be refreshed every time you change something in the code.
 
 ### GraphQL implementation
-In order to use GraphQL you need to define a GraphQL schema. This schema contains the __types definition__, a detailed description of the objects that GraphQL will return, and the __query definition__, a detailed description of the requests that GraphQL can handle.
+In order to use GraphQL you need to define a GraphQL schema. This schema contains the __types definition__, a detailed description of the objects that GraphQL returns, and the __query definition__, a detailed description of the requests that GraphQL can handle.
 
 In order to keep the schema definition separated from the server implementation, let's create a new file called __schemaBuild.js__ under the server directory.
 
@@ -236,8 +237,8 @@ const RootQuery = new GraphQLObjectType({
 })
 ```
 
-This query object is of type *"ArtworkType"*, that means that it will return an object of *"ArtworkType"* and accepts as an *argument* an integer: the *id* of the artwork.
-At the end of the file let's export it:
+This query object is of type *"ArtworkType"*, which means that it will return an object of *"ArtworkType"* and accepts as an *argument* an integer: the *id* of the artwork.
+At the end of the file, let's export it:
 ```
 module.exports = new GraphQLSchema({
     query: RootQuery
@@ -322,7 +323,7 @@ This structure requires the definition of the following specific types:
 __Connection Type__ is made of a list of __Edge Type objects__ and a __PageInfo Type object__.
 The __Edge Type__ is made of a list of __node__ and a __cursor__ value.
 
-In this new scenario the *ArtworkType* represents a node of this structure. In GraphQL you can navigate through the edges to all the nodes of the application to discover their values.
+In this new scenario, the *ArtworkType* represents a node of this structure. In GraphQL you can navigate through the edges to all the nodes of the application to discover their values.
 The cursor acts like a pointer that indicates the place where starting the exploration and the pageInfo object tells you if there are further nodes to discover or if you are at the end of the edge.
 
 Let's go adding the new types to the schema.
@@ -353,7 +354,7 @@ const ArtworkConnection = new GraphQLObjectType({
 });
 ```
 
-As you can see the new types implements the relationships that we have explained before and that you can see shown in the following picture.
+As you can see, the new types implements the relationships that we have explained before and that you can see shown in the following picture.
 
 ![Schema specs](./tutorial-img/schema-specs.png)
 
@@ -368,7 +369,7 @@ Go back to the *db.js* file ad add to the functions within the *module.export se
         var decodedID = Buffer.from(encodedId, 'base64').toString('utf-8').split("_")[1];
         return decodedID;
     }
-    allArtworksCursor: function (limitValue, cursor) {
+    allArtsCursor: function (limitValue, cursor) {
         var cursorVal = cursor;
 
         return knex('artwork').where('id', '>', cursorVal).limit(limitValue)
@@ -415,7 +416,7 @@ Under the *artwork* query definition add a comma `,` and paste the  code:
                 var cursor = db.decode(args.after);
                 artworksCollection = db.allArtworksCursor(args.first, cursor);
 
-                /* This way to decide if more results are available doesn't work"
+                /* To be implemented
 
                 var nodesLeft = db.allArtworksCursorCount(cursor);
             
@@ -466,9 +467,4 @@ And this is the result:
 
 You could also ask for the `lastCursor` field, it can be useful for your next query to keep track of the last element you have already seen.
 
-The application is  able to return a specific artwork having an id and a list of paginated artworks that you can go through using cursors.
-
-
-
-
-
+The application returns a specific artwork having an id and a list of paginated artworks that you can go through using cursors.
